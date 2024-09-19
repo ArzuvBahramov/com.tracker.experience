@@ -7,10 +7,13 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.slf4j.Slf4j;
+import org.acme.dto.TrackerExperienceMatrix;
 import org.acme.dto.request.TrackerExperienceRequest;
 import org.acme.service.TrackerExperienceService;
 
 @Path("/tracker/experience")
+@Slf4j
 public class TrackerExperienceController {
     @Inject
     TrackerExperienceService trackerExperienceService;
@@ -19,7 +22,9 @@ public class TrackerExperienceController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response tracker(TrackerExperienceRequest trackerExperience) {
-        return Response.ok(trackerExperienceService.tracker(trackerExperience)).build();
+        log.info("Post request tracker is called!");
+        TrackerExperienceMatrix matrix = trackerExperienceService.tracker(trackerExperience);
+        return Response.ok(matrix).build();
     }
 
 }

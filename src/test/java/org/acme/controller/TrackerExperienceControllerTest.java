@@ -1,7 +1,7 @@
-package org.acme.service;
+package org.acme.controller;
 
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
+import io.restassured.http.ContentType;
 import org.acme.dto.ProjectDto;
 import org.acme.dto.TechnologiesDto;
 import org.acme.dto.TechnologyExperience;
@@ -10,25 +10,19 @@ import org.acme.dto.request.TrackerExperienceRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 @QuarkusTest
-public class TrackerExperienceServiceTest {
-    @Inject
-    TrackerExperienceService trackerExperienceService;
-
-    private TechnologiesDto technologies;
-    private ProjectDto projectDto;
+public class TrackerExperienceControllerTest {
     private TrackerExperienceRequest request;
     @BeforeEach
     public void setupTechnologies() {
-        technologies = TechnologiesDto.builder()
+        TechnologiesDto technologies = TechnologiesDto.builder()
                 .name("Programming languages")
                 .technologies(Arrays
                         .stream("Java 8,Java 11, Java 17, Python, JavaScript, TypeScript"
@@ -36,7 +30,7 @@ public class TrackerExperienceServiceTest {
                         .toList())
                 .build();
 
-        projectDto = ProjectDto.builder()
+        ProjectDto projectDto = ProjectDto.builder()
                 .name("INSURANCE COMPANY SYSTEM")
                 .description("Project for one of the biggest European insurance companies. It is a big Enterprise application for internal employees from different countries that gives them efficient tools to work with clients and various documents. We had a big remote team from anywhere and worked together with QA’s, DevOps’es, and support.\n")
                 .role("Software Engineer")
@@ -51,26 +45,23 @@ public class TrackerExperienceServiceTest {
                 .technologies(List.of(technologies))
                 .build();
     }
-
     @Test
-    public void testTrackerReturnsNotNull() {
-        TrackerExperienceMatrix result = trackerExperienceService.tracker(request);
+    void tracker(){
+        TrackerExperienceMatrix expectedMatrix = TrackerExperienceMatrix.builder()
+                .technologies(Map.of("Programming languages", List.of(
+                        TechnologyExperience.builder().name("Java").experience(2).year(2022).build(),
+                        TechnologyExperience.builder().name("JavaScript").experience(1).year(2021).build())))
+                .build();
 
-        assertNotNull(result, "Result should not be null");
-        assertNotNull(result.technologies(), "Result of matrix should not be null");
-    }
-
-    @Test
-    public void textTrackerTechnologies() {
-        TrackerExperienceMatrix result = trackerExperienceService.tracker(request);
-
-        assertNotNull(result.technologies().get("Programming languages"), "Programming languages is not exists");
-
-        List<TechnologyExperience> experiences = result.technologies().get("Programming languages");
-        TechnologyExperience experience = experiences.get(0);
-
-        assertNotNull(experience.getName(), "Technology is not exists");
-        assertEquals(experience.getExperience(), 2);
-        assertEquals(experience.getYear(), 2021);
+        given()
+                .contentType(ContentType.JSON)
+                    .body(request)
+                        .when().post("/tracker/experience")
+                    .then()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                .body("technologies['Programming languages'][0].name", equalTo("Java 8"))
+                .body("technologies['Programming languages'][0].experience", equalTo(2))
+                .body("technologies['Programming languages'][0].year", equalTo(2021));
     }
 }
