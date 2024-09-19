@@ -4,10 +4,12 @@ import lombok.Builder;
 import org.acme.dto.ProjectDto;
 import org.acme.dto.TechnologiesDto;
 
+import java.util.List;
+
 @Builder
 public record TrackerExperienceRequest(
-        TechnologiesDto technologies,
-        ProjectDto projects
+        List<TechnologiesDto> technologies,
+        List<ProjectDto> projects
 ){
 
 }

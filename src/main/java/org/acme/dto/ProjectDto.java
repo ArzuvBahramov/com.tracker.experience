@@ -1,7 +1,10 @@
 package org.acme.dto;
 
+import lombok.Builder;
+
 import java.util.List;
 
+@Builder
 public record ProjectDto(
         String name,
         String description,
