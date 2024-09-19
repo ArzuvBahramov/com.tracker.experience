@@ -12,7 +12,7 @@ import org.acme.dto.TrackerExperienceMatrix;
 import org.acme.dto.request.TrackerExperienceRequest;
 import org.acme.service.TrackerExperienceService;
 
-@Path("/tracker/experience")
+@Path("/v1/tracker-experience")
 @Slf4j
 public class TrackerExperienceController {
     @Inject

@@ -56,7 +56,7 @@ public class TrackerExperienceControllerTest {
         given()
                 .contentType(ContentType.JSON)
                     .body(request)
-                        .when().post("/tracker/experience")
+                        .when().post("/v1/tracker-experience")
                     .then()
                     .statusCode(200)
                     .contentType(ContentType.JSON)
