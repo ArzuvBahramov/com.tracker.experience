@@ -1,6 +1,7 @@
 package org.acme.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.acme.dto.ProjectDto;
 import org.acme.dto.TechnologiesDto;
@@ -8,28 +9,30 @@ import org.acme.dto.TechnologyExperience;
 import org.acme.dto.TrackerExperienceMatrix;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Slf4j
 public class ExperienceCalculator {
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM.yyyy");
+    private final static Integer START_DATE_INDEX = 0;
+    private final static Integer END_DATE_INDEX = 1;
+    @Inject
+    DateManagement dateManagement;
     public TrackerExperienceMatrix tracker(List<TechnologiesDto> technologies, List<ProjectDto> projects) {
 
         Map<String, List<TechnologyExperience>> experienceMap = buildMatrix(technologies);
 
         for (ProjectDto project : projects) {
             String period = project.period().trim();
-            LocalDate startDate = parseDate(period.substring(0, period.indexOf(" ")).trim());
-            LocalDate endDate = parseDate(period.substring(project.period().lastIndexOf(" ")).trim());
+            List<LocalDate> dates = dateManagement.parseStartDateAndEndDate(period);
+            LocalDate startDate = dates.get(START_DATE_INDEX);
+            LocalDate endDate = dates.get(END_DATE_INDEX);
             int years = (int) ChronoUnit.YEARS.between(startDate, endDate);
 
             List<String> environments = project.environment();
@@ -65,7 +68,5 @@ public class ExperienceCalculator {
                 ));
     }
 
-    private LocalDate parseDate(String dateString) {
-        return YearMonth.parse(dateString, DATE_FORMATTER).atDay(1);
-    }
+
 }
