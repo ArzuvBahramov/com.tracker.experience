@@ -25,7 +25,7 @@ public class TrackerExperienceControllerTest {
         TechnologiesDto technologies = TechnologiesDto.builder()
                 .name("Programming languages")
                 .technologies(Arrays
-                        .stream("Java 8,Java 11, Java 17, Python, JavaScript, TypeScript"
+                        .stream("Java, Java 8,Java 11, Java 17, Python, JavaScript, TypeScript"
                                 .split(","))
                         .toList())
                 .build();
@@ -60,7 +60,7 @@ public class TrackerExperienceControllerTest {
                     .then()
                     .statusCode(200)
                     .contentType(ContentType.JSON)
-                .body("technologies['Programming languages'][0].name", equalTo("Java 8"))
+                .body("technologies['Programming languages'][0].name", equalTo("Java"))
                 .body("technologies['Programming languages'][0].experience", equalTo(2))
                 .body("technologies['Programming languages'][0].year", equalTo(2021));
     }

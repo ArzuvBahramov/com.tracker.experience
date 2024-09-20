@@ -9,7 +9,6 @@ import org.acme.dto.TechnologyExperience;
 import org.acme.dto.TrackerExperienceMatrix;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -24,8 +23,11 @@ public class ExperienceCalculator {
     private final static Integer END_DATE_INDEX = 1;
     @Inject
     DateManagement dateManagement;
-    public TrackerExperienceMatrix tracker(List<TechnologiesDto> technologies, List<ProjectDto> projects) {
+    @Inject
+    OptimizeExperience optimizeExperience;
 
+    public TrackerExperienceMatrix tracker(List<TechnologiesDto> technologies, List<ProjectDto> projects) {
+        log.info("tracker matrix");
         Map<String, List<TechnologyExperience>> experienceMap = buildMatrix(technologies);
 
         for (ProjectDto project : projects) {
@@ -45,6 +47,7 @@ public class ExperienceCalculator {
                     });
 
         }
+        optimizeExperience.optimize(experienceMap);
 
         return TrackerExperienceMatrix.builder()
                 .technologies(experienceMap)

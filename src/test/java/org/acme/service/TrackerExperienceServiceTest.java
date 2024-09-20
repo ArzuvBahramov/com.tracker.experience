@@ -31,7 +31,7 @@ public class TrackerExperienceServiceTest {
         technologies = TechnologiesDto.builder()
                 .name("Programming languages")
                 .technologies(Arrays
-                        .stream("Java 8,Java 11, Java 17, Python, JavaScript, TypeScript"
+                        .stream("Java, Java 8,Java 11, Java 17, Python, JavaScript, TypeScript"
                                 .split(","))
                         .toList())
                 .build();
