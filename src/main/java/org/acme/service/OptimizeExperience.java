@@ -44,14 +44,16 @@ public class OptimizeExperience {
             List<String> splitTech = getSplitTech(splitText);
             for (String tech: splitTech) {
                 int sizeOfSubText = sizeOfSubText(experiencesString, tech.trim());
-                if (sizeOfSubText == 0 || !checkTechnology(experiencesString, tech)) {
+                if (sizeOfSubText == 0) {
                     break;
+                }
+                if (!checkTechnology(experiencesString, tech)) {
+                    continue;
                 }
                 if (sizeOfSubText > 1) {
                     removeExperienceFlag = true;
                     experiences.stream().filter(exp -> exp.getName().equals(tech.trim())).findFirst().ifPresent(exp-> {
                                 exp.setYear(Math.max(exp.getYear(), experience.getYear()));
-                                exp.setExperience(Math.addExact(exp.getExperience(), experience.getExperience()));
                             }
                     );
                     break;
