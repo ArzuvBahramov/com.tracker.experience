@@ -43,7 +43,7 @@ public class ExperienceCalculator {
 
             experienceMap.values().stream()
                     .flatMap(Collection::stream)
-                    .filter(techExp -> environments.contains(techExp.getName().toLowerCase().trim()))
+                    .filter(techExp -> isExistsTechnologyInEnvironments(techExp.getName().toLowerCase().trim(),environments))
                     .forEach(techExp -> {
                         techExp.setExperience(Math.addExact(techExp.getExperience(), years));
                         techExp.setYear(Math.max(techExp.getYear(), endDate.getYear()));
@@ -79,5 +79,9 @@ public class ExperienceCalculator {
         int years = periodDate.getYears();
 
         return periodDate.getMonths() <=6 ? years : ++years;
+    }
+
+    private boolean isExistsTechnologyInEnvironments(String technology, List<String> environments) {
+        return environments.stream().anyMatch(environment -> environment.contains(technology));
     }
 }
