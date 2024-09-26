@@ -9,6 +9,7 @@ import org.acme.dto.TechnologyExperience;
 import org.acme.dto.TrackerExperienceMatrix;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -35,12 +36,14 @@ public class ExperienceCalculator {
             List<LocalDate> dates = dateManagement.parseStartDateAndEndDate(period);
             LocalDate startDate = dates.get(START_DATE_INDEX);
             LocalDate endDate = dates.get(END_DATE_INDEX);
-            int years = (int) ChronoUnit.YEARS.between(startDate, endDate);
+            int years = getYears(startDate, endDate);
 
-            List<String> environments = project.environment();
+            List<String> environments = project.environment()
+                    .stream().map(String::toLowerCase).map(String::trim).toList();
+
             experienceMap.values().stream()
                     .flatMap(Collection::stream)
-                    .filter(techExp -> environments.contains(techExp.getName()))
+                    .filter(techExp -> environments.contains(techExp.getName().toLowerCase().trim()))
                     .forEach(techExp -> {
                         techExp.setExperience(Math.addExact(techExp.getExperience(), years));
                         techExp.setYear(Math.max(techExp.getYear(), endDate.getYear()));
@@ -71,5 +74,10 @@ public class ExperienceCalculator {
                 ));
     }
 
+    private int getYears(LocalDate startDate, LocalDate endDate) {
+        Period periodDate = Period.between(startDate, endDate);
+        int years = periodDate.getYears();
 
+        return periodDate.getMonths() <=6 ? years : ++years;
+    }
 }
