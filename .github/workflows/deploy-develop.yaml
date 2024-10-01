@@ -5,6 +5,8 @@ on:
     branches:
       - develop
       - CTE-0010-create-docker-image-workflow
+    tags:
+      - '1.0.0-SNAPSHOT'
 permissions:
   id-token: write
   contents: read
