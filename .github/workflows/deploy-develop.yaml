@@ -4,7 +4,6 @@ on:
     # trigger on pushes to the main branch only
     branches:
       - develop
-      - CTE-0010-create-docker-image-workflow
     tags:
       - '1.0.0-SNAPSHOT'
 permissions:
