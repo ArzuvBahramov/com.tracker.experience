@@ -1,4 +1,4 @@
-name: Push to Docker Hub
+name: Docker Image CI
 
 on:
   workflow_call:
@@ -7,6 +7,8 @@ on:
         required: true
         type: string
         description: 'The name of the environment to push to.'
+    tags:
+      - '1.0.0-SNAPSHOT'
 permissions:
   id-token: write
   contents: read
@@ -35,9 +37,12 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       # Build the Docker image
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/quarkus-app:${{ github.sha }} .
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: arzuvbahramov/com.tracker.experience:${{ github.ref_name }}
 
-      # Push the Docker image to Docker Hub
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/quarkus-app:${{ github.sha }}
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
