@@ -9,7 +9,7 @@ permissions:
   contents: read
 jobs:
   stage:
-    uses: ./.github/workflows/push-docker.yml
+    uses: ./.github/workflows/push-docker.yaml
     with:
       environment_name: develop
     secrets: inherit
