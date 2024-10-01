@@ -38,7 +38,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: src/main/docker/Dockerfile.jvm
+          context: ./src/main/docker
+          file: Dockerfile.jvm
           push: true
           tags: arzuvbahramov/com.tracker.experience:${{ github.ref_name }}
 
