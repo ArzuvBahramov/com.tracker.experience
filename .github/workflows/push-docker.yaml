@@ -35,13 +35,15 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       # Build the Docker image
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./src/main/docker
-          file: Dockerfile.jvm
-          push: true
-          tags: arzuvbahramov/com.tracker.experience:${{ github.ref_name }}
+
+
+      # Build the Docker image
+      - name: Build Docker image
+        run: docker buildx build -f ./src/main/docker/Dockerfile.jvm -t arzuvbahramov/com.tracker.experience:${{ github.sha }} .
+
+      # Push the Docker image to Docker Hub
+      - name: Push Docker image
+        run: docker push arzuvbahramov/com.tracker.experience:${{ github.sha }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
