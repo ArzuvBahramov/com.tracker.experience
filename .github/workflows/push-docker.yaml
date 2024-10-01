@@ -1,4 +1,4 @@
-name: Push to Docker Hub
+name: Docker Image CI
 
 on:
   workflow_call:
@@ -35,9 +35,15 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       # Build the Docker image
+
+
+      # Build the Docker image
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/quarkus-app:${{ github.sha }} .
+        run: docker buildx build -f ./src/main/docker/Dockerfile.jvm -t arzuvbahramov/com.tracker.experience:${{ github.sha }} .
 
       # Push the Docker image to Docker Hub
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/quarkus-app:${{ github.sha }}
+        run: docker push arzuvbahramov/com.tracker.experience:${{ github.sha }}
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
